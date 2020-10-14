@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F530B8EE-4618-4472-86EF-3E8A671186CD}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Graph_UI</RootNamespace>
+    <AssemblyName>Graph_UI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Add_Arc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Add_Arc.Designer.cs">
+      <DependentUpon>Add_Arc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Add_Arc_W.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Add_Arc_W.Designer.cs">
+      <DependentUpon>Add_Arc_W.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clone_Graph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Clone_Graph.Designer.cs">
+      <DependentUpon>Clone_Graph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.cs">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Get_filename.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Get_filename.Designer.cs">
+      <DependentUpon>Get_filename.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Get_New_Vertex.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Get_New_Vertex.Designer.cs">
+      <DependentUpon>Get_New_Vertex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graph.cs" />
+    <Compile Include="la10.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="la10.Designer.cs">
+      <DependentUpon>la10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="la6.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="la6.Designer.cs">
+      <DependentUpon>la6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="New_Empty_Graph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="New_Empty_Graph.Designer.cs">
+      <DependentUpon>New_Empty_Graph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remove_Arc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Remove_Arc.Designer.cs">
+      <DependentUpon>Remove_Arc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Remove_Vertex.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Remove_Vertex.Designer.cs">
+      <DependentUpon>Remove_Vertex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lb9.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lb9.Designer.cs">
+      <DependentUpon>lb9.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Add_Arc.resx">
+      <DependentUpon>Add_Arc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Add_Arc_W.resx">
+      <DependentUpon>Add_Arc_W.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Clone_Graph.resx">
+      <DependentUpon>Clone_Graph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Get_filename.resx">
+      <DependentUpon>Get_filename.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Get_New_Vertex.resx">
+      <DependentUpon>Get_New_Vertex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="la10.resx">
+      <DependentUpon>la10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="la6.resx">
+      <DependentUpon>la6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="New_Empty_Graph.resx">
+      <DependentUpon>New_Empty_Graph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Remove_Arc.resx">
+      <DependentUpon>Remove_Arc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Remove_Vertex.resx">
+      <DependentUpon>Remove_Vertex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lb9.resx">
+      <DependentUpon>lb9.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
