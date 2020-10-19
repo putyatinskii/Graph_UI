@@ -168,7 +168,9 @@
             this.comboBox1.Items.AddRange(new object[] {
             "Задание la(6)",
             "Задание la(10)",
-            "Задание lb(9)"});
+            "Задание lb(9)",
+            "Задание II(21)",
+            "Задание II(33)"});
             this.comboBox1.Location = new System.Drawing.Point(6, 36);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(188, 24);

@@ -282,6 +282,43 @@ namespace Graph_UI
                     }
                     comboBox1.Text = "";
                     break;
+                case "Задание II(21)":
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_or != 'y')
+                        {
+                            Graphs[cur_graph].II_21();
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Выбранный граф является ориентированным!");
+                        }
+                    }
+                    break;
+                case "Задание II(33)":
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_weight != 'n')
+                        {
+                            List<string> list = new List<string>(Graphs[cur_graph].II_33());
+                            if (list.Count == 0)
+                                MessageBox.Show("Вершины, длины кратчайших путей от которых до всех остальных одинаковы, не существуют");
+                            else
+                            {
+                                string s = string.Join(", ", list);
+                                MessageBox.Show("Вершины, длины кратчайших путей от которых до всех остальных одинаковы: " + s);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Выбранный граф не является взвешенным!");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    }
+                    break;
             }
         }
     }

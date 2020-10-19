@@ -92,7 +92,6 @@ namespace Graph_UI
             };
         }
 
-
         public bool Search_Key(string new_key)
         {
             if (Vertexes.ContainsKey(new_key)) return true;
@@ -274,7 +273,6 @@ namespace Graph_UI
             return list;
         }
 
-
         public void Symm_sub(Graph g2)
         {
             foreach (KeyValuePair<string, string> elem in g2.Vertexes)
@@ -306,6 +304,113 @@ namespace Graph_UI
                     }
                     Vertexes[elem.Key] = string.Join(";", Set_cur);
                     if (Vertexes[elem.Key] != "") Vertexes[elem.Key] += ";";
+                }
+            }
+        }
+
+        public HashSet<int> Dijkstra(string v0)
+        {
+            Dictionary<string, int> d = new Dictionary<string, int>();   // массив длин путей
+            foreach (string elem in Vertexes.Keys)
+                d.Add(elem, int.MaxValue);
+
+            Dictionary<string, string> p = new Dictionary<string, string>();   // массив длин путей
+            foreach (string elem in Vertexes.Keys)
+                p.Add(elem, "");
+
+            Dictionary<string, bool> used = new Dictionary<string, bool>();   // закрашена ли вершина
+            foreach (string elem in Vertexes.Keys)
+                used.Add(elem, false);
+
+            string v;
+            d[v0] = 0;
+            p[v0] = "_";
+
+            for(int i = 0; i < Vertexes.Count; i++)
+            {
+                v = "";
+                foreach (string j in Vertexes.Keys)
+                {
+                    if (!used[j] && (v == "" || d[j] < d[v]))
+                    {
+                        v = j;
+                    }
+                }
+                if (d[v] == int.MaxValue) break;
+                used[v] = true;
+
+                string[] s = Vertexes[v].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string k in s)
+                {
+                    if (k.Substring(4, k.IndexOf(',') - 4) != v0)
+                    {
+                        int w = Convert.ToInt32(k.Substring(k.IndexOf(',') + 1));
+                        if (d[v] + w < d[k.Substring(4, k.IndexOf(',') - 4)])
+                        {
+                            d[k.Substring(4, k.IndexOf(',') - 4)] = d[v] + w;
+                            p[k.Substring(4, k.IndexOf(',') - 4)] = v;
+                        }
+                    }
+                }
+            }
+            d[v0] = int.MinValue;
+            return new HashSet<int>(d.Values);
+        }
+
+        public List<string> II_33()
+        {
+            List<string> list = new List<string>();
+            foreach (string elem in Vertexes.Keys)
+            {
+                HashSet<int> d = Dijkstra(elem);
+                if (d.Count == 2 && d.Contains(int.MinValue) && !d.Contains(int.MaxValue)) list.Add(elem);
+            }
+            return list;
+        }
+
+        public int dfs(string v, Dictionary<string, bool> used)
+        {
+            int usedVertexes = 1;
+            used[v] = true;
+            string[] s = Vertexes[v].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string k in s)
+            {
+                if (Get_weight == 'y')
+                {
+                    if (!used[k.Substring(4, k.IndexOf(',') - 4)])
+                        usedVertexes += dfs(k.Substring(4, k.IndexOf(',') - 4), used);
+                }
+                else if (!used[k.Substring(4)])
+                    usedVertexes += dfs(k.Substring(4), used);
+            }
+            return usedVertexes;
+        }
+
+        public void dfs_cycle(string v)
+        {
+
+        }
+
+        public void II_21()
+        {
+            Dictionary<string, bool> used = new Dictionary<string, bool>();
+            foreach (string elem in Vertexes.Keys)
+            {
+                used.Add(elem, false);
+            }
+            bool a = false;
+            foreach (string elem in Vertexes.Keys)
+            {
+                if (Vertexes.Count == dfs(elem, used)) a = true;
+                if (a)
+                {
+
+                }
+                foreach (string v in Vertexes.Keys)
+                {
+                    used[v] = false;
                 }
             }
         }
