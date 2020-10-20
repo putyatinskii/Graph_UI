@@ -294,30 +294,62 @@ namespace Graph_UI
                             MessageBox.Show("ОШИБКА!!! Выбранный граф является ориентированным!");
                         }
                     }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    }
                     break;
                 case "Задание II(33)":
                     if (cur_graph != "")
                     {
-                        if (Graphs[cur_graph].Get_weight != 'n')
-                        {
-                            List<string> list = new List<string>(Graphs[cur_graph].II_33());
-                            if (list.Count == 0)
-                                MessageBox.Show("Вершины, длины кратчайших путей от которых до всех остальных одинаковы, не существуют");
-                            else
-                            {
-                                string s = string.Join(", ", list);
-                                MessageBox.Show("Вершины, длины кратчайших путей от которых до всех остальных одинаковы: " + s);
-                            }
-                        }
+
+                        List<string> list = new List<string>(Graphs[cur_graph].II_33());
+                        if (list.Count == 0)
+                            MessageBox.Show("Вершины, длины кратчайших путей от которых до всех остальных одинаковы, не существуют");
                         else
                         {
-                            MessageBox.Show("ОШИБКА!!! Выбранный граф не является взвешенным!");
+                            string s = string.Join(", ", list);
+                            MessageBox.Show("Вершины, длины кратчайших путей от которых до всех остальных одинаковы: " + s);
                         }
+
                     }
                     else
                     {
                         MessageBox.Show("Граф не выбран!");
                     }
+                    break;
+                case "Задание III(K)":
+                    break;
+                case "Задание IVa(13)":
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_weight == 'y')
+                        {
+                            IVa13 newForm = new IVa13(this, Graphs[cur_graph]);
+                            newForm.Owner = this;
+                            newForm.ShowDialog();
+                            if (newForm.u != "" && newForm.v1 != "" && newForm.v2 != "")
+                            {
+                                Dictionary<string, int> d = Graphs[cur_graph].Dijkstra(newForm.u);
+                                string v1 = "", v2 = "";
+                                if (d[newForm.v1] == int.MaxValue) v1 = " не существует";
+                                else v1 = " равен: " + d[newForm.v1];
+                                if (d[newForm.v2] == int.MaxValue) v2 = " не существует";
+                                else v2 = " равен: " + d[newForm.v2];
+                                MessageBox.Show("Кратчайший путь от " + newForm.u + " до " + newForm.v1 + v1 + ".\n\n" + 
+                                    "Кратчайший путь от " + newForm.u + " до " + newForm.v2 + v2 + ".");
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Граф не является взвешенным!");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    } 
                     break;
             }
         }

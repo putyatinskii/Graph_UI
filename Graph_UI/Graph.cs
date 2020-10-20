@@ -308,7 +308,7 @@ namespace Graph_UI
             }
         }
 
-        public HashSet<int> Dijkstra(string v0)
+        public Dictionary<string, int> Dijkstra(string v0)
         {
             Dictionary<string, int> d = new Dictionary<string, int>();   // массив длин путей
             foreach (string elem in Vertexes.Keys)
@@ -355,7 +355,42 @@ namespace Graph_UI
                 }
             }
             d[v0] = int.MinValue;
-            return new HashSet<int>(d.Values);
+            return d;
+        }
+
+        public bool Bfs(string v0)
+        {
+            Dictionary<string, bool> used = new Dictionary<string, bool>();
+            Queue<string> q = new Queue<string>();
+            foreach (string elem in Vertexes.Keys)
+            {
+                used.Add(elem, false);
+            }
+
+            used[v0] = true;
+            q.Enqueue(v0);
+
+            while (q.Count != 0)
+            {
+                v0 = q.Dequeue();
+                if (Vertexes[v0] == "") return false;
+                else
+                {
+                    string[] s = Vertexes[v0].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string s_elem in s)
+                    {
+                        string str = Search_vertex(s_elem);
+                        if (!used[str])
+                        {
+                            used[str] = true;
+                            q.Enqueue(str);
+                        }
+                    }
+                    if (q.Count == Vertexes.Count - 1) return true;
+                    else return false;
+                }
+            }
+            return false;
         }
 
         public List<string> II_33()
@@ -363,8 +398,7 @@ namespace Graph_UI
             List<string> list = new List<string>();
             foreach (string elem in Vertexes.Keys)
             {
-                HashSet<int> d = Dijkstra(elem);
-                if (d.Count == 2 && d.Contains(int.MinValue) && !d.Contains(int.MaxValue)) list.Add(elem);
+                if (Bfs(elem)) list.Add(elem);
             }
             return list;
         }
@@ -377,13 +411,7 @@ namespace Graph_UI
 
             foreach (string k in s)
             {
-                if (Get_weight == 'y')
-                {
-                    if (!used[k.Substring(4, k.IndexOf(',') - 4)])
-                        usedVertexes += dfs(k.Substring(4, k.IndexOf(',') - 4), used);
-                }
-                else if (!used[k.Substring(4)])
-                    usedVertexes += dfs(k.Substring(4), used);
+                usedVertexes += dfs(Search_vertex(k), used);
             }
             return usedVertexes;
         }

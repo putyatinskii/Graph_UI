@@ -70,5 +70,10 @@ namespace Graph_UI
                     this.Close();
             }
         }
+
+        private void lb9_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

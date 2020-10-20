@@ -89,6 +89,12 @@
       <DependentUpon>Get_New_Vertex.cs</DependentUpon>
     </Compile>
     <Compile Include="Graph.cs" />
+    <Compile Include="IVa13.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IVa13.Designer.cs">
+      <DependentUpon>IVa13.cs</DependentUpon>
+    </Compile>
     <Compile Include="la10.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +153,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Get_New_Vertex.resx">
       <DependentUpon>Get_New_Vertex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IVa13.resx">
+      <DependentUpon>IVa13.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="la10.resx">
       <DependentUpon>la10.cs</DependentUpon>
