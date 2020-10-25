@@ -25,7 +25,6 @@ namespace Graph_UI
 
         }
 
-
         private void File_Download_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -287,7 +286,12 @@ namespace Graph_UI
                     {
                         if (Graphs[cur_graph].Get_or != 'y')
                         {
-                            Graphs[cur_graph].II_21();
+                            List<string> res = new List<string>(Graphs[cur_graph].II_21());
+                            if (res.Count == 0)
+                                MessageBox.Show("Из данного графа нельзя получить дерево при удалении одной вершины");
+                            else
+                                MessageBox.Show("Из данного графа можно получить дерево при удалении одной из сдедующих вершин: " 
+                                    + string.Join(", ", res));
                         }
                         else
                         {
@@ -319,6 +323,24 @@ namespace Graph_UI
                     }
                     break;
                 case "Задание III(K)":
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_or == 'n' && Graphs[cur_graph].Get_weight == 'y')
+                        {
+                            Graphs.Add("min_tree_" + cur_graph, new Graph('n', 'y'));
+                            Graphs[cur_graph].Kruskal(Graphs["min_tree_" + cur_graph]);
+                            listBox_Graphs.Items.Add("min_tree_" + cur_graph);
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Выбранный граф является ориентированным или невзвешенным!");
+                        }
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    }
                     break;
                 case "Задание IVa(13)":
                     if (cur_graph != "")

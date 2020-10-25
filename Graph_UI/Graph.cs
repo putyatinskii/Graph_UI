@@ -249,6 +249,12 @@ namespace Graph_UI
             else return s;
         }
 
+        public string Search_weight(string s)
+        {
+            s = s.Trim();
+            return s.Substring(s.IndexOf(',')+1, s.Length- s.IndexOf(',')-1).Trim();
+        }
+
         public List<string> indegree(string Vertex)
         {
             Dictionary<string, int> dic = new Dictionary<string, int>();
@@ -403,7 +409,7 @@ namespace Graph_UI
             return list;
         }
 
-        public int dfs(string v, Dictionary<string, bool> used)
+        public int Dfs(string v, Dictionary<string, bool> used)
         {
             int usedVertexes = 1;
             used[v] = true;
@@ -411,34 +417,113 @@ namespace Graph_UI
 
             foreach (string k in s)
             {
-                usedVertexes += dfs(Search_vertex(k), used);
+                string k_v = Search_vertex(k);
+                if (!used[k_v])
+                usedVertexes += Dfs(k_v, used);
             }
             return usedVertexes;
         }
 
-        public void dfs_cycle(string v)
+        public int Dfs(string v, string v0, Dictionary<string, bool> used)
         {
+            int usedVertexes = 1;
+            used[v] = true;
+            string[] s = Vertexes[v].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
+            foreach (string k in s)
+            {
+                string k_v = Search_vertex(k);
+                if (!used[k_v] && k_v != v0)
+                    usedVertexes += Dfs(k_v, v0, used);
+            }
+            return usedVertexes;
         }
 
-        public void II_21()
+        public List<string> II_21()
         {
             Dictionary<string, bool> used = new Dictionary<string, bool>();
+            List<string> res = new List<string>();
+
             foreach (string elem in Vertexes.Keys)
             {
                 used.Add(elem, false);
             }
-            bool a = false;
+
+            if (Dfs(Vertexes.Keys.First(), used) != Vertexes.Count) return res;
+
             foreach (string elem in Vertexes.Keys)
             {
-                if (Vertexes.Count == dfs(elem, used)) a = true;
-                if (a)
-                {
+                used[elem] = false;
+            }
 
-                }
-                foreach (string v in Vertexes.Keys)
+            int cnt = 0;
+            foreach (string elem in Vertexes.Keys)
+            {
+                string[] s = Vertexes[elem].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                cnt += s.Length; 
+            }
+            cnt /= 2;
+            foreach (string elem in Vertexes.Keys)
+            {
+                string[] s = Vertexes[elem].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (cnt - s.Length + 1 == Vertexes.Count - 1)
                 {
-                    used[v] = false;
+                    if (Dfs(Search_vertex(s[0]), elem, used) == Vertexes.Count - 1)
+                    {
+                        res.Add(elem);
+                    }
+                    foreach (string v in Vertexes.Keys)
+                    {
+                        used[v] = false;
+                    }
+                }
+            }
+            return res;
+        }
+
+        public void Kruskal(Graph tree_g)
+        {
+            foreach (string elem in Vertexes.Keys)
+            {
+                tree_g.Vertexes.Add(elem, "");
+            }
+
+            Dictionary<string, int> g = new Dictionary<string, int>();
+            foreach (string v1 in Vertexes.Keys)
+            {
+                string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string str in s_v)
+                {
+                    string v2 = Search_vertex(str);
+                    int m = int.Parse(Search_weight(str));
+                    if (!g.Keys.Contains(v2 + "-" + v1)) g.Add(v1 + "-" + v2, m);
+                }
+            }
+
+            g = g.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+            Dictionary<string, int> tree_id = new Dictionary<string, int>();
+            int i = 1;
+            foreach (string elem in Vertexes.Keys)
+            {
+                tree_id.Add(elem, i);
+                ++i;
+            }
+
+            foreach(string arc in g.Keys)
+            {
+                string a = arc.Substring(0, arc.IndexOf("-"));
+                string b = arc.Substring(arc.IndexOf("-") + 1, arc.Length - arc.IndexOf("-") - 1);
+                int l = g[arc];
+                if (tree_id[a] != tree_id[b])
+                {
+                    tree_g.Add_Arc(a, b, l.ToString());
+                    int old_id = tree_id[b];
+                    int new_id = tree_id[a];
+                    foreach (string cur_id in Vertexes.Keys)
+                    {
+                        if (tree_id[cur_id] == old_id)
+                            tree_id[cur_id] = new_id;
+                    }
                 }
             }
         }
