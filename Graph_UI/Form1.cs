@@ -299,9 +299,25 @@ namespace Graph_UI
                     {
                         if (Graphs[cur_graph].Get_or == 'n' && Graphs[cur_graph].Get_weight == 'y')
                         {
-                            Graphs.Add("min_tree_" + cur_graph, new Graph('n', 'y'));
-                            Graphs[cur_graph].Kruskal(Graphs["min_tree_" + cur_graph]);
-                            listBox_Graphs.Items.Add("min_tree_" + cur_graph);
+                            Dictionary<string, bool> used = new Dictionary<string, bool>();
+                            foreach (string elem in Graphs[cur_graph].Get_Vertexes.Keys)
+                            {
+                                used.Add(elem, false);
+                            }
+                            if (Graphs[cur_graph].Dfs(Graphs[cur_graph].Get_Vertexes.Keys.First(), used) == Graphs[cur_graph].Get_Vertexes.Count)
+                            {
+                                List<string> str_keys = new List<string>(Graphs.Keys);
+                                Form2 newForm = new Form2(this, str_keys);
+                                newForm.Owner = this;
+                                newForm.ShowDialog();
+                                if (newForm.str != "")
+                                {
+                                    Graphs.Add(newForm.str, new Graph('n', 'y'));
+                                    Graphs[cur_graph].Kruskal(Graphs[newForm.str]);
+                                    listBox_Graphs.Items.Add(newForm.str);
+                                }
+                            }
+                            else MessageBox.Show("ОШИБКА!!! Выбранный граф состоит более, чем из одной компоненты связности!");
                         }
                         else
                         {
@@ -350,10 +366,13 @@ namespace Graph_UI
 
         private void listBox_Graphs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            listBox_Cur_Graph.Items.Clear();
-            cur_graph = listBox_Graphs.SelectedItem.ToString();
-            foreach (KeyValuePair<string, string> elem in Graphs[cur_graph].Get_Vertexes)
-                listBox_Cur_Graph.Items.Add(elem.Key + ":" + elem.Value);
+            if (listBox_Graphs.SelectedItem != null)
+            {
+                listBox_Cur_Graph.Items.Clear();
+                cur_graph = listBox_Graphs.SelectedItem.ToString();
+                foreach (KeyValuePair<string, string> elem in Graphs[cur_graph].Get_Vertexes)
+                    listBox_Cur_Graph.Items.Add(elem.Key + ":" + elem.Value);
+            }
         }
     }
 }
