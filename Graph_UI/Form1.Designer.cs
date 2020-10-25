@@ -46,9 +46,6 @@
             this.button_add_vertex = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.listBox_Cur_Graph = new System.Windows.Forms.ListBox();
-            this.Enter = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox_Add_Arc.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -97,7 +94,7 @@
             this.groupBox1.Controls.Add(this.Empty_graph);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(376, 461);
+            this.groupBox1.Size = new System.Drawing.Size(376, 504);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Создание графа";
@@ -117,12 +114,13 @@
             this.listBox_Graphs.ItemHeight = 16;
             this.listBox_Graphs.Location = new System.Drawing.Point(179, 56);
             this.listBox_Graphs.Name = "listBox_Graphs";
-            this.listBox_Graphs.Size = new System.Drawing.Size(191, 372);
+            this.listBox_Graphs.Size = new System.Drawing.Size(191, 404);
             this.listBox_Graphs.TabIndex = 6;
+            this.listBox_Graphs.SelectedIndexChanged += new System.EventHandler(this.listBox_Graphs_SelectedIndexChanged);
             // 
             // Out_File
             // 
-            this.Out_File.Location = new System.Drawing.Point(192, 152);
+            this.Out_File.Location = new System.Drawing.Point(192, 192);
             this.Out_File.Name = "Out_File";
             this.Out_File.Size = new System.Drawing.Size(150, 50);
             this.Out_File.TabIndex = 4;
@@ -141,12 +139,9 @@
             this.groupBox_Add_Arc.Controls.Add(this.label3);
             this.groupBox_Add_Arc.Controls.Add(this.Out_File);
             this.groupBox_Add_Arc.Controls.Add(this.listBox_Cur_Graph);
-            this.groupBox_Add_Arc.Controls.Add(this.Enter);
-            this.groupBox_Add_Arc.Controls.Add(this.label1);
-            this.groupBox_Add_Arc.Controls.Add(this.textBox1);
-            this.groupBox_Add_Arc.Location = new System.Drawing.Point(405, 12);
+            this.groupBox_Add_Arc.Location = new System.Drawing.Point(403, 12);
             this.groupBox_Add_Arc.Name = "groupBox_Add_Arc";
-            this.groupBox_Add_Arc.Size = new System.Drawing.Size(584, 461);
+            this.groupBox_Add_Arc.Size = new System.Drawing.Size(390, 504);
             this.groupBox_Add_Arc.TabIndex = 5;
             this.groupBox_Add_Arc.TabStop = false;
             this.groupBox_Add_Arc.Text = "Работа с графом";
@@ -154,7 +149,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.comboBox1);
-            this.groupBox2.Location = new System.Drawing.Point(352, 27);
+            this.groupBox2.Location = new System.Drawing.Point(12, 37);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(200, 100);
             this.groupBox2.TabIndex = 13;
@@ -182,7 +177,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 132);
+            this.label4.Location = new System.Drawing.Point(9, 152);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(154, 17);
             this.label4.TabIndex = 12;
@@ -190,7 +185,7 @@
             // 
             // button_Remove_Arc
             // 
-            this.button_Remove_Arc.Location = new System.Drawing.Point(192, 384);
+            this.button_Remove_Arc.Location = new System.Drawing.Point(192, 416);
             this.button_Remove_Arc.Name = "button_Remove_Arc";
             this.button_Remove_Arc.Size = new System.Drawing.Size(150, 50);
             this.button_Remove_Arc.TabIndex = 11;
@@ -200,7 +195,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(192, 326);
+            this.button1.Location = new System.Drawing.Point(192, 360);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(150, 50);
             this.button1.TabIndex = 6;
@@ -210,7 +205,7 @@
             // 
             // button_remove_vertex
             // 
-            this.button_remove_vertex.Location = new System.Drawing.Point(192, 268);
+            this.button_remove_vertex.Location = new System.Drawing.Point(192, 304);
             this.button_remove_vertex.Name = "button_remove_vertex";
             this.button_remove_vertex.Size = new System.Drawing.Size(150, 50);
             this.button_remove_vertex.TabIndex = 6;
@@ -220,7 +215,7 @@
             // 
             // button_add_vertex
             // 
-            this.button_add_vertex.Location = new System.Drawing.Point(192, 210);
+            this.button_add_vertex.Location = new System.Drawing.Point(192, 248);
             this.button_add_vertex.Name = "button_add_vertex";
             this.button_add_vertex.Size = new System.Drawing.Size(150, 50);
             this.button_add_vertex.TabIndex = 10;
@@ -241,43 +236,17 @@
             this.listBox_Cur_Graph.FormattingEnabled = true;
             this.listBox_Cur_Graph.HorizontalScrollbar = true;
             this.listBox_Cur_Graph.ItemHeight = 16;
-            this.listBox_Cur_Graph.Location = new System.Drawing.Point(9, 152);
+            this.listBox_Cur_Graph.Location = new System.Drawing.Point(6, 190);
             this.listBox_Cur_Graph.Name = "listBox_Cur_Graph";
             this.listBox_Cur_Graph.Size = new System.Drawing.Size(174, 276);
             this.listBox_Cur_Graph.TabIndex = 9;
             this.listBox_Cur_Graph.SelectedIndexChanged += new System.EventHandler(this.listBox_Cur_Graph_SelectedIndexChanged);
             // 
-            // Enter
-            // 
-            this.Enter.Location = new System.Drawing.Point(192, 47);
-            this.Enter.Name = "Enter";
-            this.Enter.Size = new System.Drawing.Size(75, 40);
-            this.Enter.TabIndex = 8;
-            this.Enter.Text = "Ввод";
-            this.Enter.UseVisualStyleBackColor = true;
-            this.Enter.Click += new System.EventHandler(this.Enter_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(177, 17);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Введите название графа:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(6, 56);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(177, 22);
-            this.textBox1.TabIndex = 6;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1102, 504);
+            this.ClientSize = new System.Drawing.Size(814, 528);
             this.Controls.Add(this.groupBox_Add_Arc);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -304,9 +273,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button Out_File;
         private System.Windows.Forms.GroupBox groupBox_Add_Arc;
-        private System.Windows.Forms.Button Enter;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ListBox listBox_Graphs;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
