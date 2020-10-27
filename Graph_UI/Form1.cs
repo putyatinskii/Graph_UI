@@ -93,34 +93,6 @@ namespace Graph_UI
             }
         }
 
-        private void Enter_Click(object sender, EventArgs e)
-        {
-            if (textBox1.Text != "")
-            {
-                label3.Text = "";
-                cur_graph = textBox1.Text;
-                if (!Graphs.ContainsKey(cur_graph))
-                {
-                    MessageBox.Show("ОШИБКА!!! Графа с таким названием не существует!!!");
-                }
-                else
-                {
-                    listBox_Cur_Graph.Items.Clear();
-                    foreach (KeyValuePair<string, string> elem in Graphs[cur_graph].Get_Vertexes)
-                        listBox_Cur_Graph.Items.Add(elem.Key + ":" + elem.Value);
-                    if ((Graphs[cur_graph].Get_or == 'n' && Graphs[cur_graph].Get_weight == 'n'))
-                        label3.Text = "Граф " + cur_graph + " — неориентированный, невзвешенный";
-                    else if ((Graphs[cur_graph].Get_or == 'n' && Graphs[cur_graph].Get_weight == 'y'))
-                        label3.Text = "Граф " + cur_graph + " — неориентированный, взвешенный";
-                    else if ((Graphs[cur_graph].Get_or == 'y' && Graphs[cur_graph].Get_weight == 'n'))
-                        label3.Text = "Граф " + cur_graph + " — ориентированный, невзвешенный";
-                    else label3.Text = "Граф " + cur_graph + " — ориентированный, взвешенный";
-                }
-                textBox1.Text = "";
-                
-            }
-        }
-
         private void listBox_Cur_Graph_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -327,9 +299,25 @@ namespace Graph_UI
                     {
                         if (Graphs[cur_graph].Get_or == 'n' && Graphs[cur_graph].Get_weight == 'y')
                         {
-                            Graphs.Add("min_tree_" + cur_graph, new Graph('n', 'y'));
-                            Graphs[cur_graph].Kruskal(Graphs["min_tree_" + cur_graph]);
-                            listBox_Graphs.Items.Add("min_tree_" + cur_graph);
+                            Dictionary<string, bool> used = new Dictionary<string, bool>();
+                            foreach (string elem in Graphs[cur_graph].Get_Vertexes.Keys)
+                            {
+                                used.Add(elem, false);
+                            }
+                            if (Graphs[cur_graph].Dfs(Graphs[cur_graph].Get_Vertexes.Keys.First(), used) == Graphs[cur_graph].Get_Vertexes.Count)
+                            {
+                                List<string> str_keys = new List<string>(Graphs.Keys);
+                                Form2 newForm = new Form2(this, str_keys);
+                                newForm.Owner = this;
+                                newForm.ShowDialog();
+                                if (newForm.str != "")
+                                {
+                                    Graphs.Add(newForm.str, new Graph('n', 'y'));
+                                    Graphs[cur_graph].Kruskal(Graphs[newForm.str]);
+                                    listBox_Graphs.Items.Add(newForm.str);
+                                }
+                            }
+                            else MessageBox.Show("ОШИБКА!!! Выбранный граф состоит более, чем из одной компоненты связности!");
                         }
                         else
                         {
@@ -373,6 +361,17 @@ namespace Graph_UI
                         MessageBox.Show("Граф не выбран!");
                     } 
                     break;
+            }
+        }
+
+        private void listBox_Graphs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox_Graphs.SelectedItem != null)
+            {
+                listBox_Cur_Graph.Items.Clear();
+                cur_graph = listBox_Graphs.SelectedItem.ToString();
+                foreach (KeyValuePair<string, string> elem in Graphs[cur_graph].Get_Vertexes)
+                    listBox_Cur_Graph.Items.Add(elem.Key + ":" + elem.Value);
             }
         }
     }
