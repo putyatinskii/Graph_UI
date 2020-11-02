@@ -145,6 +145,7 @@
             this.groupBox_Add_Arc.TabIndex = 5;
             this.groupBox_Add_Arc.TabStop = false;
             this.groupBox_Add_Arc.Text = "Работа с графом";
+            this.groupBox_Add_Arc.Enter += new System.EventHandler(this.groupBox_Add_Arc_Enter);
             // 
             // groupBox2
             // 
@@ -167,7 +168,9 @@
             "Задание II(21)",
             "Задание II(33)",
             "Задание III(K)",
-            "Задание IVa(13)"});
+            "Задание IVa(13)",
+            "Задание IVb(22)",
+            "Задание IVc(18)"});
             this.comboBox1.Location = new System.Drawing.Point(6, 36);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(188, 24);

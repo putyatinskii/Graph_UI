@@ -360,7 +360,6 @@ namespace Graph_UI
                     }
                 }
             }
-            d[v0] = int.MinValue;
             return d;
         }
 
@@ -526,6 +525,172 @@ namespace Graph_UI
                     }
                 }
             }
+        }
+
+        public List<string> Ford_Bellman()
+        {
+            Dictionary<string, int> edge = new Dictionary<string, int>();
+            foreach (string v1 in Vertexes.Keys)
+            {
+                string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string str in s_v)
+                {
+                    string v2 = Search_vertex(str);
+                    int m = int.Parse(Search_weight(str));
+                    edge.Add(v1 + "-" + v2, m);
+                }
+            }
+
+            Dictionary<string, long> d = new Dictionary<string, long>();
+            Dictionary<string, string> p = new Dictionary<string, string>();
+            foreach (string v1 in Vertexes.Keys)
+            {
+                d.Add(v1, int.MaxValue);
+                p.Add(v1, "");
+            }
+
+            string x = "";
+            foreach (string v in Vertexes.Keys)
+            {
+                x = "";
+                foreach (string e in edge.Keys)
+                {
+                    string a = e.Substring(0, e.IndexOf("-"));
+                    string b = e.Substring(e.IndexOf("-") + 1, e.Length - e.IndexOf("-") - 1);
+                    int l = edge[e];
+                    if (d[b] > d[a] + l)
+                    {
+                        d[b] = Math.Max(int.MinValue, d[a] + l);
+                        p[b] = a;
+                        x = b;
+                    }
+                }
+            }
+
+            List<string> path = new List<string>();
+            if (x == "") return path;
+            else
+            {
+                string y = x;
+                for (int i = 0; i < Vertexes.Count; ++i)
+                    y = p[y];
+                for (string cur = y; ; cur = p[cur])
+                {
+                    path.Add(cur);
+                    if (cur == y && path.Count > 1) break;
+                }
+                path.Reverse();
+                return path;
+            }
+
+        }
+
+        public int Floyd(string v, string u, Dictionary<string, Dictionary<string, string>> p)
+        {
+            Dictionary<string, Dictionary<string, int>> d = new Dictionary<string, Dictionary<string, int>>();
+            foreach (string v1 in Vertexes.Keys)
+            {
+                string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                Dictionary<string, int> local = new Dictionary<string, int>();
+                foreach (string str in s_v)
+                {
+                    string v2 = Search_vertex(str);
+                    int m = int.Parse(Search_weight(str));
+                    local.Add(v2, m);
+                }
+                local.Add(v1, 0);
+                foreach (string v2 in Vertexes.Keys)
+                {
+                    if (!local.Keys.Contains(v2)) local.Add(v2, int.MaxValue);
+                }
+                d.Add(v1, local);
+            }
+            foreach (string k in Vertexes.Keys)
+            {
+                foreach (string i in Vertexes.Keys)
+                {
+                    foreach (string j in Vertexes.Keys)
+                    {
+                        if (d[i][k] < int.MaxValue && d[k][j] < int.MaxValue)
+                        {
+                            d[i][j] = Math.Min(d[i][j], d[i][k] + d[k][j]);
+                            p[i][j] = p[i][k];
+                        }
+                    }
+                }
+            }
+            return d[v][u];
+
+        }
+
+        public List<int> IVb_22(string v, string u, int k)
+        {
+
+            List<int> distance = new List<int>();
+            //List<List<string>> path = new List<List<string>>();
+            //Dictionary<string, Dictionary<string, string>> p = new Dictionary<string, Dictionary<string, string>>();
+
+            //foreach (string v1 in Vertexes.Keys)
+            //{
+            //    string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            //    Dictionary<string, string> local = new Dictionary<string, string>();
+            //    foreach (string str in s_v)
+            //    {
+            //        string v2 = Search_vertex(str);
+            //        local.Add(v2, v2);
+            //    }
+            //    foreach (string v2 in Vertexes.Keys)
+            //    {
+            //        if (!local.Keys.Contains(v2)) local.Add(v2, "");
+            //    }
+            //    p.Add(v1, local);
+            //}
+
+
+            //distance.Add(Floyd(v, u, p));
+
+            //string c = v;
+            //List<string> path_elem = new List<string>();
+            //while (c != u)
+            //{
+            //    path_elem.Add(c);
+            //    c = p[c][u];
+            //}
+            //path.Add(path_elem);
+
+            //List<int> maybe_k = new List<int>();
+
+            //for (int i = 1; i < k; i++)
+            //{
+            //    for (int j = 0; j < path[i - 1].Count - 2; j++)
+            //    {
+            //        string spurNode = path[i - 1][j];
+            //        string[] rootPath = new string[j];
+            //        path[i-1].CopyTo(0, rootPath, 0, j);
+
+            //        foreach (List<string> elem_path in path)
+            //        {
+            //            if (rootPath == elem_path.CopyTo(0, rootPath, 0, j))
+            //        }
+
+
+            //    }
+            //}
+
+
+
+
+                //for (int i = 0; i < k; i++)
+                //{
+                //    int d = Floyd(u, v, p);
+                //    if (d != int.MaxValue)
+                //    {
+                //        distance.Add(d);
+
+                //    }
+                //    else break;
+                //}
+                return distance;
         }
     }
 }

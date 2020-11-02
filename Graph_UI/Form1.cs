@@ -361,6 +361,53 @@ namespace Graph_UI
                         MessageBox.Show("Граф не выбран!");
                     } 
                     break;
+                case "Задание IVb(22)":
+                    //if (cur_graph != "")
+                    //{
+                    //    if (Graphs[cur_graph].Get_weight == 'y')
+                    //    {
+                    //        Add_Arc newForm = new Add_Arc(this, Graphs[cur_graph]);
+                    //        newForm.Owner = this;
+                    //        newForm.ShowDialog();
+                    //        if (newForm.str1 != "" && newForm.str2 != "")
+                    //        {
+                    //            string s = string.Join(", ", Graphs[cur_graph].IVb_22(newForm.str1, newForm.str2, 3));
+                    //            MessageBox.Show(s);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("ОШИБКА!!! Граф не является взвешенным!");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    MessageBox.Show("Граф не выбран!");
+                    //}
+                    break;
+                case "Задание IVc(18)":
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_weight == 'y')
+                        {
+                            List<string> res = new List<string>(Graphs[cur_graph].Ford_Bellman());
+                            if (res.Count == 0) MessageBox.Show("В данном графе нет отрицательных циклов");
+                            else
+                            {
+                                string s = string.Join(", ", res);
+                                MessageBox.Show("Отрицательный цикл: " + s);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Граф не является взвешенным!");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    }
+                    break;
             }
         }
 
@@ -373,6 +420,11 @@ namespace Graph_UI
                 foreach (KeyValuePair<string, string> elem in Graphs[cur_graph].Get_Vertexes)
                     listBox_Cur_Graph.Items.Add(elem.Key + ":" + elem.Value);
             }
+        }
+
+        private void groupBox_Add_Arc_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
