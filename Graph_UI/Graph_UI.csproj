@@ -95,6 +95,12 @@
     <Compile Include="IVa13.Designer.cs">
       <DependentUpon>IVa13.cs</DependentUpon>
     </Compile>
+    <Compile Include="IVb22.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IVb22.Designer.cs">
+      <DependentUpon>IVb22.cs</DependentUpon>
+    </Compile>
     <Compile Include="la10.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,6 +162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="IVa13.resx">
       <DependentUpon>IVa13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IVb22.resx">
+      <DependentUpon>IVb22.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="la10.resx">
       <DependentUpon>la10.cs</DependentUpon>

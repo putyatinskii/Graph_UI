@@ -322,7 +322,7 @@ namespace Graph_UI
 
             Dictionary<string, string> p = new Dictionary<string, string>();   // массив длин путей
             foreach (string elem in Vertexes.Keys)
-                p.Add(elem, "");
+               p.Add(elem, "");
 
             Dictionary<string, bool> used = new Dictionary<string, bool>();   // закрашена ли вершина
             foreach (string elem in Vertexes.Keys)
@@ -541,6 +541,8 @@ namespace Graph_UI
                 }
             }
 
+            
+
             Dictionary<string, long> d = new Dictionary<string, long>();
             Dictionary<string, string> p = new Dictionary<string, string>();
             foreach (string v1 in Vertexes.Keys)
@@ -585,33 +587,46 @@ namespace Graph_UI
 
         }
 
-        public int Floyd(string v, string u, Dictionary<string, Dictionary<string, string>> p)
+        public int Floyd(string v, string u, Dictionary<string, Dictionary<string, string>> p, List<string> new_path)
         {
+            p.Clear();
             Dictionary<string, Dictionary<string, int>> d = new Dictionary<string, Dictionary<string, int>>();
             foreach (string v1 in Vertexes.Keys)
             {
+
                 string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                Dictionary<string, int> local = new Dictionary<string, int>();
+                Dictionary<string, int> local_d = new Dictionary<string, int>();
+                Dictionary<string, string> local_p = new Dictionary<string, string>();
+
                 foreach (string str in s_v)
                 {
                     string v2 = Search_vertex(str);
                     int m = int.Parse(Search_weight(str));
-                    local.Add(v2, m);
+                    local_d.Add(v2, m);
+                    local_p.Add(v2, v2);
                 }
-                local.Add(v1, 0);
+                local_d.Add(v1, 0);
+                local_p.Add(v1, "");
                 foreach (string v2 in Vertexes.Keys)
                 {
-                    if (!local.Keys.Contains(v2)) local.Add(v2, int.MaxValue);
+                    if (!local_d.Keys.Contains(v2))
+                    {
+                        local_d.Add(v2, int.MaxValue);
+                        local_p.Add(v2, "");
+                    }
                 }
-                d.Add(v1, local);
+                d.Add(v1, local_d);
+                p.Add(v1, local_p);
             }
+
+
             foreach (string k in Vertexes.Keys)
             {
                 foreach (string i in Vertexes.Keys)
                 {
                     foreach (string j in Vertexes.Keys)
                     {
-                        if (d[i][k] < int.MaxValue && d[k][j] < int.MaxValue)
+                        if (d[i][k] < int.MaxValue && d[k][j] < int.MaxValue && d[i][k] + d[k][j] < d[i][j])
                         {
                             d[i][j] = Math.Min(d[i][j], d[i][k] + d[k][j]);
                             p[i][j] = p[i][k];
@@ -619,78 +634,98 @@ namespace Graph_UI
                     }
                 }
             }
+            if (d[v][u] != int.MaxValue)
+            {
+                string c = v;
+                while (c != u)
+                {
+                    new_path.Add(c);
+                    c = p[c][u];
+                }
+                new_path.Add(u);
+            }
             return d[v][u];
 
         }
 
-        public List<int> IVb_22(string v, string u, int k)
+        public List<List<string>> IVb_22(string v, string u, int k, List<int> distance)
         {
+            List<List<string>> path = new List<List<string>>(); // кратчайшие пути
+            Dictionary<string, Dictionary<string, string>> p = new Dictionary<string, Dictionary<string, string>>(); //матрица предков
+            List<string> first_path = new List<string>(); // потенциальные кратчайшие пути
 
-            List<int> distance = new List<int>();
-            //List<List<string>> path = new List<List<string>>();
-            //Dictionary<string, Dictionary<string, string>> p = new Dictionary<string, Dictionary<string, string>>();
+            Dictionary<string, int> edge = new Dictionary<string, int>(); //все ребра графа
+            foreach (string v1 in Vertexes.Keys)
+            {
+                string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string str in s_v)
+                {
+                    string v2 = Search_vertex(str);
+                    int m = int.Parse(Search_weight(str));
+                    edge.Add(v1 + "-" + v2, m);
+                }
+            }
 
-            //foreach (string v1 in Vertexes.Keys)
-            //{
-            //    string[] s_v = Vertexes[v1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            //    Dictionary<string, string> local = new Dictionary<string, string>();
-            //    foreach (string str in s_v)
-            //    {
-            //        string v2 = Search_vertex(str);
-            //        local.Add(v2, v2);
-            //    }
-            //    foreach (string v2 in Vertexes.Keys)
-            //    {
-            //        if (!local.Keys.Contains(v2)) local.Add(v2, "");
-            //    }
-            //    p.Add(v1, local);
-            //}
+            distance.Add(Floyd(v, u, p, first_path)); //наименьший путь
+            path.Add(first_path);
+            List<string> shortest_path = new List<string>(path[0]); //кратчайший путь, который юзается в цикле while
+            for (int i = 1; i < k; i++)
+            {
+                string delete_edge = "";
+                int res = 0;
+                int min = int.MaxValue;
+                List<string> new_path = new List<string>();
+                string node = shortest_path[0];
+                int cnt = 0;
 
-
-            //distance.Add(Floyd(v, u, p));
-
-            //string c = v;
-            //List<string> path_elem = new List<string>();
-            //while (c != u)
-            //{
-            //    path_elem.Add(c);
-            //    c = p[c][u];
-            //}
-            //path.Add(path_elem);
-
-            //List<int> maybe_k = new List<int>();
-
-            //for (int i = 1; i < k; i++)
-            //{
-            //    for (int j = 0; j < path[i - 1].Count - 2; j++)
-            //    {
-            //        string spurNode = path[i - 1][j];
-            //        string[] rootPath = new string[j];
-            //        path[i-1].CopyTo(0, rootPath, 0, j);
-
-            //        foreach (List<string> elem_path in path)
-            //        {
-            //            if (rootPath == elem_path.CopyTo(0, rootPath, 0, j))
-            //        }
+                while (node != u)
+                {
+                    string arc = shortest_path[cnt] + "-" + shortest_path[cnt + 1];
+                    int arc_m = edge[shortest_path[cnt] + "-" + shortest_path[cnt + 1]];
+                    Remove_Arc(shortest_path[cnt], shortest_path[cnt + 1]);
+                    node = shortest_path[++cnt];
+                    List<string> cur_path = new List<string>();
+                    res = Floyd(v, u, p, cur_path);
 
 
-            //    }
-            //}
+                    //if (res != int.MaxValue)
+                    //{
+                    //    path.Add(new_path);
+                    //    distance.Add(res);
+                    //    if (min >= res)
+                    //    {
+                    //        min = res;
+                    //        new_path = new List<string>(cur_path);
+                    //        delete_edge = arc;
+                    //    }
+                    //}
+                    //string[] two_vert = arc.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    //Add_Arc(two_vert[0], two_vert[1], arc_m.ToString());
 
 
+                    if (min > res)
+                    {
+                        min = res;
+                        new_path = new List<string>(cur_path);
+                        delete_edge = arc;
+                    }
+                    string[] two_vert = arc.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    Add_Arc(two_vert[0], two_vert[1], arc_m.ToString());
+                }
+                if (min != int.MaxValue)
+                {
+                    path.Add(new_path);
+                    distance.Add(min);
+                    //edge.Remove(delete_edge);
+                    string[] two_node = delete_edge.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    Remove_Arc(two_node[0], two_node[1]);
 
-
-                //for (int i = 0; i < k; i++)
-                //{
-                //    int d = Floyd(u, v, p);
-                //    if (d != int.MaxValue)
-                //    {
-                //        distance.Add(d);
-
-                //    }
-                //    else break;
-                //}
-                return distance;
+                    shortest_path = new List<string>(new_path);
+                }
+                else break;
+            }
+            //distance.Sort();
+            return path;
         }
     }
 }

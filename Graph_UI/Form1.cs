@@ -362,28 +362,39 @@ namespace Graph_UI
                     } 
                     break;
                 case "Задание IVb(22)":
-                    //if (cur_graph != "")
-                    //{
-                    //    if (Graphs[cur_graph].Get_weight == 'y')
-                    //    {
-                    //        Add_Arc newForm = new Add_Arc(this, Graphs[cur_graph]);
-                    //        newForm.Owner = this;
-                    //        newForm.ShowDialog();
-                    //        if (newForm.str1 != "" && newForm.str2 != "")
-                    //        {
-                    //            string s = string.Join(", ", Graphs[cur_graph].IVb_22(newForm.str1, newForm.str2, 3));
-                    //            MessageBox.Show(s);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        MessageBox.Show("ОШИБКА!!! Граф не является взвешенным!");
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    MessageBox.Show("Граф не выбран!");
-                    //}
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_weight == 'y')
+                        {
+                            IVb22 newForm = new IVb22(this, Graphs[cur_graph]);
+                            newForm.Owner = this;
+                            newForm.ShowDialog();
+                            if (newForm.v != "" && newForm.u != "" && newForm.k != "")
+                            {
+                                List<int> distance = new List<int>();
+                                Graph graph = (Graph)Graphs[cur_graph].Clone();
+                                List<List<string>> path = new List<List<string>>(graph.IVb_22(newForm.v, newForm.u, 
+                                                                                    Convert.ToInt32(newForm.k), distance));
+                                StringBuilder info = new StringBuilder();
+                                int i = 0;
+                                foreach (List<string> item in path)
+                                {
+                                    string str = string.Join(", ", item);
+                                    info.Append("Путь: " + str + " имеет длину " + distance[i] +"\n");
+                                    ++i;
+                                }
+                                MessageBox.Show(info.ToString());
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Граф не является взвешенным!");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    }
                     break;
                 case "Задание IVc(18)":
                     if (cur_graph != "")
