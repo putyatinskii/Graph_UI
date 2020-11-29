@@ -371,16 +371,15 @@ namespace Graph_UI
                             newForm.ShowDialog();
                             if (newForm.v != "" && newForm.u != "" && newForm.k != "")
                             {
-                                List<int> distance = new List<int>();
                                 Graph graph = (Graph)Graphs[cur_graph].Clone();
-                                List<List<string>> path = new List<List<string>>(graph.IVb_22(newForm.v, newForm.u, 
-                                                                                    Convert.ToInt32(newForm.k), distance));
+                                Dictionary<int, string> path = new Dictionary<int, string>
+                                    (graph.IVb_22(newForm.v, newForm.u, Convert.ToInt32(newForm.k)));
                                 StringBuilder info = new StringBuilder();
                                 int i = 0;
-                                foreach (List<string> item in path)
+                                foreach (int item in path.Keys)
                                 {
-                                    string str = string.Join(", ", item);
-                                    info.Append("Путь: " + str + " имеет длину " + distance[i] +"\n");
+                                    
+                                    info.Append("Путь: " + path[item].Replace(" ", ", ") + " имеет длину "+ item +"\n");
                                     ++i;
                                 }
                                 MessageBox.Show(info.ToString());
@@ -412,6 +411,26 @@ namespace Graph_UI
                         else
                         {
                             MessageBox.Show("ОШИБКА!!! Граф не является взвешенным!");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Граф не выбран!");
+                    }
+                    break;
+                case "Нахождение макс. потока":
+                    if (cur_graph != "")
+                    {
+                        if (Graphs[cur_graph].Get_weight == 'y' && Graphs[cur_graph].Get_or == 'y')
+                        {
+                            Graph graph = (Graph)Graphs[cur_graph].Clone();
+                            int max_flow = graph.Max_flow();
+                            if (max_flow == -1) MessageBox.Show("В даннос графе не содержится стока или истока!");
+                            else MessageBox.Show("Максимальный поток в данном графе равен:" + max_flow);
+                        }
+                        else
+                        {
+                            MessageBox.Show("ОШИБКА!!! Выбранный граф является неориентированным или невзвешенным!");
                         }
                     }
                     else

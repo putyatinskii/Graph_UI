@@ -9,9 +9,10 @@ namespace Graph_UI
 {
     public class Graph : ICloneable
     {
-        Dictionary<string, string> Vertexes = new Dictionary<string, string>();
-        char or;
-        char weight;
+        private Dictionary<string, string> Vertexes = new Dictionary<string, string>();
+        private char or;
+        private char weight;
+        private List<Edge> edges = new List<Edge>();
         public Dictionary<string, string> Get_Vertexes
         {
             get
@@ -51,7 +52,7 @@ namespace Graph_UI
         {
             using (StreamReader file_In = new StreamReader(file_name, Encoding.GetEncoding(1251)))
             {
-                String []inf = file_In.ReadLine().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string []inf = file_In.ReadLine().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 inf[0] = inf[0].Trim();
                 inf[1] = inf[1].Trim();
                 or = inf[0][inf[0].Length-1];
@@ -648,12 +649,12 @@ namespace Graph_UI
 
         }
 
-        public List<List<string>> IVb_22(string v, string u, int k, List<int> distance)
+        public SortedDictionary<int, string> IVb_22(string v, string u, int k)
         {
-            List<List<string>> path = new List<List<string>>(); // кратчайшие пути
+            SortedDictionary<int, string> path = new SortedDictionary<int, string>(); // кратчайшие пути
             Dictionary<string, Dictionary<string, string>> p = new Dictionary<string, Dictionary<string, string>>(); //матрица предков
-            List<string> first_path = new List<string>(); // потенциальные кратчайшие пути
-
+            List<string> new_path = new List<string>(); // новый кратчайший путь
+            int min = int.MaxValue;
             Dictionary<string, int> edge = new Dictionary<string, int>(); //все ребра графа
             foreach (string v1 in Vertexes.Keys)
             {
@@ -666,15 +667,16 @@ namespace Graph_UI
                 }
             }
 
-            distance.Add(Floyd(v, u, p, first_path)); //наименьший путь
-            path.Add(first_path);
-            List<string> shortest_path = new List<string>(path[0]); //кратчайший путь, который юзается в цикле while
+            min = Floyd(v, u, p, new_path); //наименьший путь
+            string strJoin = string.Join(" ", new_path);
+            path.Add(min, strJoin);
+            List<string> shortest_path = new List<string>(new_path); //кратчайший путь, который юзается в цикле while
             for (int i = 1; i < k; i++)
             {
                 string delete_edge = "";
                 int res = 0;
-                int min = int.MaxValue;
-                List<string> new_path = new List<string>();
+                min = int.MaxValue;
+                new_path = new List<string>();
                 string node = shortest_path[0];
                 int cnt = 0;
 
@@ -684,14 +686,14 @@ namespace Graph_UI
                     int arc_m = edge[shortest_path[cnt] + "-" + shortest_path[cnt + 1]];
                     Remove_Arc(shortest_path[cnt], shortest_path[cnt + 1]);
                     node = shortest_path[++cnt];
-                    List<string> cur_path = new List<string>();
+                    List<string> cur_path = new List<string>(); // потенциальные кратчайший путь
                     res = Floyd(v, u, p, cur_path);
 
 
                     //if (res != int.MaxValue)
                     //{
-                    //    path.Add(new_path);
-                    //    distance.Add(res);
+                    //    strJoin = string.Join(" ", cur_path);
+                    //    path.Add(res, strJoin);
                     //    if (min >= res)
                     //    {
                     //        min = res;
@@ -699,8 +701,6 @@ namespace Graph_UI
                     //        delete_edge = arc;
                     //    }
                     //}
-                    //string[] two_vert = arc.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-                    //Add_Arc(two_vert[0], two_vert[1], arc_m.ToString());
 
 
                     if (min > res)
@@ -709,23 +709,128 @@ namespace Graph_UI
                         new_path = new List<string>(cur_path);
                         delete_edge = arc;
                     }
+
                     string[] two_vert = arc.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
                     Add_Arc(two_vert[0], two_vert[1], arc_m.ToString());
                 }
                 if (min != int.MaxValue)
                 {
-                    path.Add(new_path);
-                    distance.Add(min);
-                    //edge.Remove(delete_edge);
+                    strJoin = string.Join(" ", new_path);
+                    path.Add(min, strJoin);
                     string[] two_node = delete_edge.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
                     Remove_Arc(two_node[0], two_node[1]);
-
                     shortest_path = new List<string>(new_path);
                 }
                 else break;
             }
-            //distance.Sort();
             return path;
+        }
+
+        private List<string> Search_Adj(string v)
+        {
+            List<string> adj_v = new List<string>();
+            string[] adj = Vertexes[v].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string adj_elem in adj)
+            {
+                adj_v.Add(Search_vertex(adj_elem));
+            }
+            return adj_v;
+        }
+
+        private string Search_Source(List<string> list_sources)
+        {
+            Add_Vertex("s");
+            foreach (string v in list_sources)
+            {
+                int a = edges.Where(x => x.V == v).Sum(x => x.W);
+                Add_Arc("s", v, a.ToString());
+                edges.Add(new Edge("s", v, a));
+            }
+            return "s";
+        }
+
+        private string Search_Sink(List<string> list_sinks)
+        {
+            Add_Vertex("t");
+            foreach (string v in list_sinks)
+            {
+                int a = edges.Where(x => x.U == v).Sum(x => x.W);
+                Add_Arc(v, "t", a.ToString());
+                edges.Add(new Edge(v, "t", a));
+            }
+            return "t";
+        }
+
+        public List<Edge> Get_edge()
+        {
+            List<Edge> edges = new List<Edge>();
+            foreach (string v in Vertexes.Keys)
+            {
+                string[] adj = Vertexes[v].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string elem in adj)
+                {
+                    edges.Add(new Edge(v, Search_vertex(elem), Convert.ToInt32(Search_weight(elem))));
+                }
+            }
+            return edges;
+        }
+
+        public int Ford_Fulkerson(string v, string sink, int cmin, Dictionary<string, bool> visited)
+        {
+            if (v == sink)
+                return cmin;
+            visited[v] = true;
+            List<string> adj = new List<string>(Search_Adj(v));
+            foreach (string u in adj)
+            {
+                Edge edge = edges.Single(x => x.V == v && x.U == u);
+                int delta = Ford_Fulkerson(u, sink, cmin < edge.W - edge.Flow ? cmin : edge.W - edge.Flow, visited);
+                if (delta > 0)
+                {
+                    edge.Flow += delta;
+                    return delta;
+                }
+
+            }
+            return 0;
+        }
+
+        public int Max_flow()
+        {
+            List<string> list_sinks = new List<string>();
+            HashSet<string> set_sources = new HashSet<string>(Vertexes.Keys);
+            edges = new List<Edge>(Get_edge());
+            foreach (string v in Vertexes.Keys)
+            {
+                HashSet<string> adj = new HashSet<string>(Search_Adj(v));
+                if (adj.Count == 0) list_sinks.Add(v);
+                set_sources.ExceptWith(adj);
+            }
+
+            List<string> list_sources = set_sources.ToList(); 
+            string sink = "";
+            string source = "";
+
+            if (list_sinks.Count == 0 || list_sources.Count == 0) return -1;
+            if (list_sinks.Count == 1) sink = list_sinks[0];
+            else sink = Search_Sink(list_sinks);
+            if (list_sources.Count == 1) source = list_sources[0];
+            else source = Search_Source(list_sources);
+
+            Dictionary<string, bool> visited = new Dictionary<string, bool>();
+            foreach (string v in Vertexes.Keys)
+            {
+                visited.Add(v, false);
+            }
+
+            int max_flow = 0;
+            int local_flow = Ford_Fulkerson(source, sink, int.MaxValue, visited);
+            while (local_flow != 0)
+            {
+                max_flow += local_flow;
+                local_flow = Ford_Fulkerson(source, sink, int.MaxValue, visited);
+            }
+            return max_flow;
         }
     }
 }

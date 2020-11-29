@@ -170,7 +170,8 @@
             "Задание III(K)",
             "Задание IVa(13)",
             "Задание IVb(22)",
-            "Задание IVc(18)"});
+            "Задание IVc(18)",
+            "Нахождение макс. потока"});
             this.comboBox1.Location = new System.Drawing.Point(6, 36);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(188, 24);

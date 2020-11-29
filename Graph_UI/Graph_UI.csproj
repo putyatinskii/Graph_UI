@@ -64,6 +64,7 @@
     <Compile Include="Clone_Graph.Designer.cs">
       <DependentUpon>Clone_Graph.cs</DependentUpon>
     </Compile>
+    <Compile Include="Edge.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
