@@ -784,13 +784,15 @@ namespace Graph_UI
             foreach (string u in adj)
             {
                 Edge edge = edges.Single(x => x.V == v && x.U == u);
-                int delta = Ford_Fulkerson(u, sink, cmin < edge.W - edge.Flow ? cmin : edge.W - edge.Flow, visited);
-                if (delta > 0)
+                if (edge.Flow <= edge.W)
                 {
-                    edge.Flow += delta;
-                    return delta;
+                    int delta = Ford_Fulkerson(u, sink, cmin < edge.W - edge.Flow ? cmin : edge.W - edge.Flow, visited);
+                    if (delta > 0)
+                    {
+                        edge.Flow += delta;
+                        return delta;
+                    }
                 }
-
             }
             return 0;
         }
@@ -824,11 +826,11 @@ namespace Graph_UI
             }
 
             int max_flow = 0;
-            int local_flow = Ford_Fulkerson(source, sink, int.MaxValue, visited);
+            int local_flow = Ford_Fulkerson(source, sink, int.MaxValue, new Dictionary<string, bool>(visited));
             while (local_flow != 0)
             {
                 max_flow += local_flow;
-                local_flow = Ford_Fulkerson(source, sink, int.MaxValue, visited);
+                local_flow = Ford_Fulkerson(source, sink, int.MaxValue, new Dictionary<string, bool>(visited));
             }
             return max_flow;
         }
