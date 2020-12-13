@@ -651,6 +651,7 @@ namespace Graph_UI
 
         public SortedDictionary<int, string> IVb_22(string v, string u, int k)
         {
+            SortedDictionary<int, List<string>> all_path = new SortedDictionary<int, List<string>>(); // все потенциальные кратчайшие пути
             SortedDictionary<int, string> path = new SortedDictionary<int, string>(); // кратчайшие пути
             Dictionary<string, Dictionary<string, string>> p = new Dictionary<string, Dictionary<string, string>>(); //матрица предков
             List<string> new_path = new List<string>(); // новый кратчайший путь
@@ -690,29 +691,24 @@ namespace Graph_UI
                     res = Floyd(v, u, p, cur_path);
 
 
-                    //if (res != int.MaxValue)
-                    //{
-                    //    strJoin = string.Join(" ", cur_path);
-                    //    path.Add(res, strJoin);
-                    //    if (min >= res)
-                    //    {
-                    //        min = res;
-                    //        new_path = new List<string>(cur_path);
-                    //        delete_edge = arc;
-                    //    }
-                    //}
-
-
-                    if (min > res)
+                    if (res != int.MaxValue)
                     {
-                        min = res;
-                        new_path = new List<string>(cur_path);
-                        delete_edge = arc;
+                        all_path.Add(all_path.Count, cur_path);
                     }
+
+
+                    //if (min > res)
+                    //{
+                    //    min = res;
+                    //    new_path = new List<string>(cur_path);
+                    //    delete_edge = arc;
+                    //}
 
                     string[] two_vert = arc.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
                     Add_Arc(two_vert[0], two_vert[1], arc_m.ToString());
                 }
+
+
                 if (min != int.MaxValue)
                 {
                     strJoin = string.Join(" ", new_path);
@@ -775,21 +771,38 @@ namespace Graph_UI
             return edges;
         }
 
-        public int Ford_Fulkerson(string v, string sink, int cmin, Dictionary<string, bool> visited)
+        public int Ford_Fulkerson(string v, string sink, int cmin, Dictionary<string, bool> visited, Dictionary<string, List<string>> full_adj_list)
         {
             if (v == sink)
                 return cmin;
             visited[v] = true;
-            List<string> adj = new List<string>(Search_Adj(v));
-            foreach (string u in adj)
+            foreach (string u in full_adj_list[v])
             {
-                Edge edge = edges.Single(x => x.V == v && x.U == u);
-                if (edge.Flow <= edge.W)
+                bool backwards = false;
+                Edge edge = edges.Single(x => (x.V == v && x.U == u) || (x.U == v && x.V == u));
+                if (u == edge.U)
+                    backwards = false;
+                else if (u == edge.V)
+                    backwards = true;
+                if ((!visited[u] && backwards == false && edge.Flow < edge.W) || (!visited[u] && backwards == true && edge.Flow > 0 && edge.Flow < edge.W))
                 {
-                    int delta = Ford_Fulkerson(u, sink, cmin < edge.W - edge.Flow ? cmin : edge.W - edge.Flow, visited);
+                    int delta = Ford_Fulkerson(u, sink, cmin < edge.W - edge.Flow ? cmin : edge.W - edge.Flow, 
+                        new Dictionary<string, bool>(visited), full_adj_list);
                     if (delta > 0)
                     {
-                        edge.Flow += delta;
+                        if (!backwards)
+                            edge.Flow += delta;
+                        else
+                            edge.Flow -= delta;
+                        return delta;
+                    }
+                }
+                else if (!visited[u] && backwards == true && edge.Flow > 0 && edge.Flow == edge.W)
+                {
+                    int delta = Ford_Fulkerson(u, sink, cmin < edge.Flow ? cmin : edge.Flow, new Dictionary<string, bool>(visited), full_adj_list);
+                    if (delta > 0)
+                    {
+                        edge.Flow -= delta;
                         return delta;
                     }
                 }
@@ -825,13 +838,32 @@ namespace Graph_UI
                 visited.Add(v, false);
             }
 
+            Dictionary<string, List<string>> full_adj_list = new Dictionary<string, List<string>>();
+            foreach (string v in Vertexes.Keys)
+            {
+                full_adj_list.Add(v, Search_Adj(v));
+            }
+            foreach (string v in Vertexes.Keys)
+            {
+                if (v != source && v != sink)
+                    foreach (string v_ in Vertexes.Keys)
+                    {
+                        if (v != v_ && Search_Adj(v_).IndexOf(v) != -1 && v_ != sink)
+                            full_adj_list[v].Add(v_);
+                    }
+            }
+
             int max_flow = 0;
-            int local_flow = Ford_Fulkerson(source, sink, int.MaxValue, new Dictionary<string, bool>(visited));
+            int local_flow = Ford_Fulkerson(source, sink, int.MaxValue, new Dictionary<string, bool>(visited), full_adj_list);
             while (local_flow != 0)
             {
                 max_flow += local_flow;
-                local_flow = Ford_Fulkerson(source, sink, int.MaxValue, new Dictionary<string, bool>(visited));
+                local_flow = Ford_Fulkerson(source, sink, int.MaxValue, new Dictionary<string, bool>(visited), full_adj_list);
             }
+
+            foreach (Edge e in edges)
+                e.Flow = 0;
+
             return max_flow;
         }
     }
