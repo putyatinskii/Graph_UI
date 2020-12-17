@@ -321,7 +321,7 @@ namespace Graph_UI
             foreach (string elem in Vertexes.Keys)
                 d.Add(elem, int.MaxValue);
 
-            Dictionary<string, string> p = new Dictionary<string, string>();   // массив длин путей
+            Dictionary<string, string> p = new Dictionary<string, string>();  //предки
             foreach (string elem in Vertexes.Keys)
                p.Add(elem, "");
 
@@ -649,13 +649,13 @@ namespace Graph_UI
 
         }
 
-        public SortedDictionary<int, string> IVb_22(string v, string u, int k)
+        public void IVb_22(string v, string u, int k, SortedDictionary<int, List<string>> path)
         {
-            SortedDictionary<int, List<string>> all_path = new SortedDictionary<int, List<string>>(); // все потенциальные кратчайшие пути
-            SortedDictionary<int, string> path = new SortedDictionary<int, string>(); // кратчайшие пути
             Dictionary<string, Dictionary<string, string>> p = new Dictionary<string, Dictionary<string, string>>(); //матрица предков
             List<string> new_path = new List<string>(); // новый кратчайший путь
             int min = int.MaxValue;
+
+
             Dictionary<string, int> edge = new Dictionary<string, int>(); //все ребра графа
             foreach (string v1 in Vertexes.Keys)
             {
@@ -669,57 +669,53 @@ namespace Graph_UI
             }
 
             min = Floyd(v, u, p, new_path); //наименьший путь
-            string strJoin = string.Join(" ", new_path);
-            path.Add(min, strJoin);
-            List<string> shortest_path = new List<string>(new_path); //кратчайший путь, который юзается в цикле while
-            for (int i = 1; i < k; i++)
+            if (min != int.MaxValue)
             {
-                string delete_edge = "";
+                string strJoin = string.Join(" ", new_path);
+                if (!path.Keys.Contains(min))
+                {
+                    List<string> list = new List<string>();
+                    list.Add(strJoin);
+                    path.Add(min, list);
+                }
+                List<string> shortest_path = new List<string>(new_path); //кратчайший путь, который юзается в цикле while
                 int res = 0;
                 min = int.MaxValue;
-                new_path = new List<string>();
                 string node = shortest_path[0];
                 int cnt = 0;
-
                 while (node != u)
                 {
                     string arc = shortest_path[cnt] + "-" + shortest_path[cnt + 1];
-                    int arc_m = edge[shortest_path[cnt] + "-" + shortest_path[cnt + 1]];
+                    int arc_m = edge[arc];
                     Remove_Arc(shortest_path[cnt], shortest_path[cnt + 1]);
                     node = shortest_path[++cnt];
-                    List<string> cur_path = new List<string>(); // потенциальные кратчайший путь
-                    res = Floyd(v, u, p, cur_path);
+                    new_path = new List<string>(); // потенциальные кратчайший путь
+                    min = Floyd(v, u, p, new_path);
 
 
-                    if (res != int.MaxValue)
+                    if (min != int.MaxValue)
                     {
-                        all_path.Add(all_path.Count, cur_path);
+                        strJoin = string.Join(" ", new_path);
+                        List<string> list = new List<string>();
+                        list.Add(strJoin);
+                        if (!path.Keys.Contains(min))
+                        {
+
+                            path.Add(min, list);
+                            IVb_22(v, u, k, path);
+                        }
+                        else if (path.Keys.Contains(min) && !path[min].Contains(strJoin))
+                        {
+                            path[min].Add(strJoin);
+                            IVb_22(v, u, k, path);
+                        }
                     }
 
-
-                    //if (min > res)
-                    //{
-                    //    min = res;
-                    //    new_path = new List<string>(cur_path);
-                    //    delete_edge = arc;
-                    //}
 
                     string[] two_vert = arc.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
                     Add_Arc(two_vert[0], two_vert[1], arc_m.ToString());
                 }
-
-
-                if (min != int.MaxValue)
-                {
-                    strJoin = string.Join(" ", new_path);
-                    path.Add(min, strJoin);
-                    string[] two_node = delete_edge.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-                    Remove_Arc(two_node[0], two_node[1]);
-                    shortest_path = new List<string>(new_path);
-                }
-                else break;
             }
-            return path;
         }
 
         private List<string> Search_Adj(string v)
@@ -778,26 +774,26 @@ namespace Graph_UI
             visited[v] = true;
             foreach (string u in full_adj_list[v])
             {
-                bool backwards = false;
+                bool inverse_edge = false;
                 Edge edge = edges.Single(x => (x.V == v && x.U == u) || (x.U == v && x.V == u));
                 if (u == edge.U)
-                    backwards = false;
+                    inverse_edge = false;
                 else if (u == edge.V)
-                    backwards = true;
-                if ((!visited[u] && backwards == false && edge.Flow < edge.W) || (!visited[u] && backwards == true && edge.Flow > 0 && edge.Flow < edge.W))
+                    inverse_edge = true;
+                if ((!visited[u] && inverse_edge == false && edge.Flow < edge.W) || (!visited[u] && inverse_edge == true && edge.Flow > 0 && edge.Flow < edge.W))
                 {
                     int delta = Ford_Fulkerson(u, sink, cmin < edge.W - edge.Flow ? cmin : edge.W - edge.Flow, 
                         new Dictionary<string, bool>(visited), full_adj_list);
                     if (delta > 0)
                     {
-                        if (!backwards)
+                        if (!inverse_edge)
                             edge.Flow += delta;
                         else
                             edge.Flow -= delta;
                         return delta;
                     }
                 }
-                else if (!visited[u] && backwards == true && edge.Flow > 0 && edge.Flow == edge.W)
+                else if (!visited[u] && inverse_edge == true && edge.Flow > 0 && edge.Flow == edge.W)
                 {
                     int delta = Ford_Fulkerson(u, sink, cmin < edge.Flow ? cmin : edge.Flow, new Dictionary<string, bool>(visited), full_adj_list);
                     if (delta > 0)

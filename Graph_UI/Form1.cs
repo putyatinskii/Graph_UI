@@ -372,17 +372,29 @@ namespace Graph_UI
                             if (newForm.v != "" && newForm.u != "" && newForm.k != "")
                             {
                                 Graph graph = (Graph)Graphs[cur_graph].Clone();
-                                Dictionary<int, string> path = new Dictionary<int, string>
-                                    (graph.IVb_22(newForm.v, newForm.u, Convert.ToInt32(newForm.k)));
+                                SortedDictionary<int, List<string>> path = new SortedDictionary<int, List<string>>();
+                                int k = Convert.ToInt32(newForm.k);
+                                graph.IVb_22(newForm.v, newForm.u, Convert.ToInt32(newForm.k), path);
                                 StringBuilder info = new StringBuilder();
                                 int i = 0;
-                                foreach (int item in path.Keys)
+                                if (path.Keys.Count != 0)
                                 {
-                                    
-                                    info.Append("Путь: " + path[item].Replace(" ", ", ") + " имеет длину "+ item +"\n");
-                                    ++i;
+                                    foreach (int item in path.Keys)
+                                    {
+                                        foreach (string s in path[item])
+                                            if (i < k)
+                                            {
+
+                                                info.Append("Путь: " + s.Replace(" ", ", ") + " имеет длину " + item + "\n");
+                                                ++i;
+                                            }
+                                    }
+                                    MessageBox.Show(info.ToString());
                                 }
-                                MessageBox.Show(info.ToString());
+                                else
+                                {
+                                    MessageBox.Show("Не найдено ни одного пути!");
+                                }
                             }
                         }
                         else
